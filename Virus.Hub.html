@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virus Hub</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #00FF00;
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative; /* Added */
+        }
+        .cool-title {
+            text-align: center;
+            font-size: 48px;
+            color: #00FF00;
+            text-shadow: 0 0 10px #00FF00, 0 0 20px #00FF00, 0 0 40px #00FF00, 0 0 80px #00FF00;
+        }
+        .post-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #00FF00;
+            color: #000000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .post-form {
+            display: none;
+            margin-top: 20px;
+        }
+        .post-form.active {
+            display: block;
+        }
+        .post-form input[type="text"],
+        .post-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #00FF00;
+            border-radius: 5px;
+            background-color: #000000;
+            color: #00FF00;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .post-form input[type="submit"] {
+            background-color: #00FF00;
+            color: #000000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .card {
+            background-color: #000000;
+            color: #00FF00;
+            border: 2px solid #00FF00;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px #00FF00;
+            position: relative;
+        }
+        .card h2 {
+            margin-top: 0;
+        }
+        .card p {
+            margin-bottom: 0;
+        }
+        .card a {
+            background-color: #00FF00;
+            color: #000000;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 20px;
+            display: block;
+        }
+        .search-bar {
+            margin-top: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #00FF00;
+            border-radius: 5px;
+            background-color: #000000;
+            color: #00FF00;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .no-results {
+            text-align: center;
+            color: #FF0000;
+            font-style: italic;
+            display: none;
+        }
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #FF0000;
+            color: #000000;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 100;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="cool-title">Virus Hub</h1>
+        <button class="post-button" id="postButton">Post</button>
+        
+        <div class="post-form" id="postForm">
+            <h2>Post Virus</h2>
+            <form id="virusForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+                <label for="exampleLink">Example Link:</label>
+                <input type="text" id="exampleLink" name="exampleLink" required>
+                <label for="downloadLink">Download Link:</label>
+                <input type="text" id="downloadLink" name="downloadLink" required>
+                <input type="submit" value="Post">
+            </form>
+        </div>
+        
+        <div class="search-bar" id="searchBar">
+            <input type="text" class="search-input" placeholder="Search Virus..." onkeyup="searchVirus()">
+            <div class="no-results" id="noResults">Nothing's there yet.</div>
+        </div>
+        
+        <!-- Display Posted Viruses -->
+        <div id="virusList"></div>
+    </div>
+
+    <script>
+        // Function to display delete button for each virus
+        function displayDeleteButton(card) {
+            var deleteButton = document.createElement("button");
+            deleteButton.classList.add("delete-button");
+            deleteButton.innerText = "Delete";
+            deleteButton.onclick = function() {
+                card.remove();
+                saveViruses();
+            };
+            card.appendChild(deleteButton);
+        }
+
+        // Function to save viruses
+        function saveViruses() {
+            var virusList = document.getElementById("virusList");
+            localStorage.setItem("savedViruses", virusList.innerHTML); // Save virus list to local storage
+        }
+
+        // Function to load saved viruses
+        function loadViruses() {
+            var savedViruses = localStorage.getItem("savedViruses");
+            if (savedViruses) {
+                document.getElementById("virusList").innerHTML = savedViruses;
+            }
+            // Display delete button for each virus if the correct password is entered
+            const passwordInput = "1987"; // Master Password
+            if (passwordInput === "1987") {
+                var virusCards = document.querySelectorAll('.card');
+                virusCards.forEach(card => {
+                    displayDeleteButton(card);
+                });
+            }
+        }
+
+        // Function to post a virus
+        function postVirus(name, description, exampleLink, downloadLink) {
+            // Create a new virus card
+            var virusCard = document.createElement("div");
+            virusCard.classList.add("card");
+            virusCard.innerHTML = `
+                <h2>${name}</h2>
+                <p>${description}</p>
+                <a href="${exampleLink}" target="_blank">Watch example</a>
+                <a href="${downloadLink}"
+                <a href="${downloadLink}" target="_blank">Download File</a>
+            `;
+
+            // Add delete button if the correct password is entered
+            const passwordInput = "1987"; // Master Password
+            if (passwordInput === "1987") {
+                displayDeleteButton(virusCard);
+            }
+
+            // Add the new virus card to the virus list
+            document.getElementById("virusList").appendChild(virusCard);
+            saveViruses(); // Save viruses after posting
+        }
+
+        document.getElementById("postButton").addEventListener("click", function() {
+            document.getElementById("postForm").classList.toggle("active");
+            document.getElementById("searchBar").style.display = "none"; // Hide search bar when posting
+            document.getElementById("virusList").innerHTML = ""; // Clear virus list when posting
+            loadViruses(); // Load saved viruses after posting
+        });
+
+        document.getElementById("virusForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var name = document.getElementById("name").value;
+            var description = document.getElementById("description").value;
+            var exampleLink = document.getElementById("exampleLink").value;
+            var downloadLink = document.getElementById("downloadLink").value;
+            postVirus(name, description, exampleLink, downloadLink); // Post the virus
+            document.getElementById("virusForm").reset(); // Reset the form
+            document.getElementById("postForm").classList.remove("active"); // Hide post form
+            document.getElementById("searchBar").style.display = "block"; // Show search bar again
+        });
+
+        function searchVirus() {
+            var input, filter, cards, card, title, i, found;
+            input = document.querySelector('.search-input');
+            filter = input.value.toUpperCase();
+            cards = document.querySelectorAll('.card');
+            found = false;
+            for (i = 0; i < cards.length; i++) {
+                card = cards[i];
+                title = card.querySelector('h2');
+                if (filter && title.innerText.toUpperCase().indexOf(filter) > -1) {
+                    card.style.display = "";
+                    found = true;
+                } else if (!filter) {
+                    card.style.display = ""; // Show all cards when not searching
+                } else {
+                    card.style.display = "none";
+                }
+            }
+            const noResults = document.getElementById("noResults");
+            if (!found && filter) {
+                noResults.style.display = "block";
+            } else {
+                noResults.style.display = "none";
+            }
+        }
+
+        // Load saved viruses when the page loads
+        window.onload = function() {
+            loadViruses();
+        };
+    </script>
+</body>
+</html>
